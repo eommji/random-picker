@@ -1,0 +1,17 @@
+.name-list li {
+  transition: all 0.3s ease-in;
+}
+.name-list li.hide {
+  transform: translateY(100%);
+  opacity: 0;
+}
+.name-list li.winner {
+  color: red;
+}
+.name-list li:hover button {
+  opacity: 1;
+}
+.name-list button {
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}/*# sourceMappingURL=style.css.map */
