@@ -25,4 +25,4 @@ settings.json
 .vscode
 
 # map
-*.map
+*.css.map
