@@ -1,47 +1,99 @@
-const nameForm = document.querySelector('.name-form');
-const nameInput = nameForm.querySelector('.name-input');
-const nameList = document.querySelector('.name-list');
-const randomBtn = document.querySelector('.random-buttom');
-const arr = [];
+/*
+  [동명이인일 경우 고려해야 함]
+  - 각 사람마다 고유한 ID(사번??)
+  - 이름 Input 대신 직원 명단이 있고 선택 시 자동 입력되게??
 
-const handleWinner = numRandom => {
-  const winner = nameList.getElementsByTagName('li')[numRandom - 1];
+  [당첨 우선순위]
+  1. 목록에 없는 사람
+  2. 당첨 횟수 적은 사람
+  3. 당첨된 지 오래된 사람
+*/
+
+const form = document.querySelector('.form');
+const inputName = form.querySelector('.input-name');
+const list = document.querySelector('.list');
+const btnRandom = document.querySelector('.btn-random');
+const btnSave = document.querySelector('.btn-save');
+const year = document.querySelector('.select-year');
+const month = document.querySelector('.select-month');
+
+let listArr = [];
+let winnerArr = [];
+let count = 1;
+
+const saveList = () => sessionStorage.setItem('list', JSON.stringify(listArr));
+const winnerList = () => localStorage.setItem('winner', JSON.stringify(winnerArr));
+
+const handleWinner = id => {
+  const winner = list.querySelector(`li[data-id="${id}"]`);
   winner.classList.add('winner');
 }
 
 const handleRandom = () => {
-  const min = 1;
-  const max = nameList.getElementsByTagName('li').length;
+  const max = listArr.length;
+  const numRandom = Math.trunc(Math.random() * max);
   if (max === 0) return;
-  const numRandom = Math.trunc(Math.random() * (max - min + 1) + min);
-  
-
-  arr.push(numRandom);
-  handleWinner(numRandom);
+  handleWinner(listArr[numRandom].id);
+  const { id, ...rest } = listArr[numRandom];
+  winnerArr.push(rest);
+  listArr.splice(numRandom, 1);
+  saveList();
+  winnerList();
 }
 
 const deleteName = event => {
-  event.target.parentElement.classList.add('hide');
-  setTimeout(() => event.target.parentElement.remove(), 300);
+  const targetLi = event.target.parentNode;
+  targetLi.classList.add('hide');
+  setTimeout(() => targetLi.remove(), 300);
+  const new_listArr = listArr.filter(e => e.id !== parseInt(targetLi.dataset.id));
+  listArr = new_listArr;
+  saveList();
 }
 
 const paintName = name => {
   const li = document.createElement('li');
-  const button = document.createElement('button');
+  const btnDel = document.createElement('button');
+  const listId = listArr.length + 1;
+
+  li.dataset.id = listId;
   li.append(name);
-  button.append('X');
-  li.append(button)
-  nameList.append(li);
-  button.addEventListener('click', deleteName);
+  btnDel.append('X');
+  btnDel.addEventListener('click', deleteName);
+  li.append(btnDel);
+  list.append(li);
+
+  winnerArr.map(e => {
+    if (e.name === name) {
+      count++
+    }
+  })
+
+  const listObj = {
+    id: listId,
+    date: `${year.value}-${month.value}`,
+    name,
+    count
+  };
+  listArr.push(listObj);
+  saveList();
 }
 
 const handleSubmit = event => {
   event.preventDefault();
-  const name = nameInput.value;
+  const name = inputName.value;
   if (name === '') return;
-  nameInput.value = '';
+  inputName.value = '';
   paintName(name);
 }
 
-nameForm.addEventListener('submit', handleSubmit);
-randomBtn.addEventListener('click', handleRandom)
+const handleSave = () => {
+
+}
+
+if (localStorage.getItem('winner')) {
+  winnerArr.push(...JSON.parse(localStorage.getItem('winner')));
+}
+
+form.addEventListener('submit', handleSubmit);
+btnRandom.addEventListener('click', handleRandom);
+btnSave.addEventListener('click', handleSave);

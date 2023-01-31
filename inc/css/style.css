@@ -1,17 +1,95 @@
-.name-list li {
-  transition: all 0.3s ease-in;
+:root {
+  --dark-color: #333;
+  --light-color: #fff;
 }
-.name-list li.hide {
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--dark-color);
+  }
+}
+@media (prefers-color-theme: light) {
+  body {
+    background-color: var(--light-color);
+  }
+}
+* {
+  margin: 0;
+}
+
+body {
+  padding: 2rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.form select {
+  padding: 0.5rem;
+}
+
+.input-name {
+  border: 0;
+  border-bottom: 1px solid var(--dark-color);
+  padding: 0.5rem;
+}
+
+.list {
+  margin-top: 2rem;
+}
+.list li {
+  color: #666;
+}
+.list li.hide {
   transform: translateY(100%);
   opacity: 0;
 }
-.name-list li.winner {
+.list li.winner {
   color: red;
 }
-.name-list li:hover button {
+.list li:hover button {
   opacity: 1;
 }
-.name-list button {
+.list button {
   opacity: 0;
   transition: opacity 0.3s ease-in;
+  background-color: transparent;
+  border: 1px solid var(--dark-color);
+  background-color: var(--dark-color);
+  border-radius: 50%;
+  margin-left: 0.5rem;
+  color: var(--light-color);
+}
+
+.btn-mode {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  border: 0;
+  border-radius: 2rem;
+  font-size: 0;
+  background-color: var(--dark-color);
+}
+.btn-mode:before {
+  display: block;
+  content: "";
+  width: 5rem;
+  height: 3rem;
+}
+.btn-mode:after {
+  display: block;
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--light-color);
+  transition: transform 0.3s ease-in;
+}
+.btn-mode.active:after {
+  transform: translateY(-50%) translateX(2.8rem);
 }/*# sourceMappingURL=style.css.map */

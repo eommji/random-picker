@@ -1,7 +1,46 @@
-.name-list {
+:root {
+  --dark-color: #333;
+  --light-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--dark-color);
+  }
+}
+@media (prefers-color-theme: light) {
+  body {
+    background-color: var(--light-color);
+  }
+}
+
+* {
+  margin: 0;
+}
+
+body {
+  padding: 2rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.form select {
+  padding: 0.5rem;
+}
+
+.input-name {
+  border: 0;
+  border-bottom: 1px solid var(--dark-color);
+  padding: 0.5rem;
+}
+
+.list {
+  margin-top: 2rem;
 
   li {
-    transition: all 0.3s ease-in;
+    color: #666;
 
     &.hide {
       transform: translateY(100%);
@@ -20,5 +59,53 @@
   button {
     opacity: 0;
     transition: opacity 0.3s ease-in;
+    background-color: transparent;
+    border: 1px solid var(--dark-color);
+    background-color: var(--dark-color);
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    color: var(--light-color);
+  }
+}
+
+.btn-random {
+  // margin-top: 2rem;
+  // background-color: var(--dark-color);
+  // padding: 0.5rem 1rem;
+  // color: var(--light-color);
+}
+
+.btn-mode {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  border: 0;
+  border-radius: 2rem;
+  font-size: 0;
+  background-color: var(--dark-color);
+
+  &:before {
+    display: block;
+    content: "";
+    width: 5rem;
+    height: 3rem;
+  }
+
+  &:after {
+    display: block;
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--light-color);
+    transition: transform 0.3s ease-in;
+  }
+
+  &.active:after {
+    transform: translateY(-50%) translateX(2.8rem);
   }
 }
