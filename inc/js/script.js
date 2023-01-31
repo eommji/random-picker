@@ -19,7 +19,7 @@ const month = document.querySelector('.select-month');
 
 let listArr = [];
 let winnerArr = [];
-let count = 1;
+let count = 0;
 
 const saveList = () => sessionStorage.setItem('list', JSON.stringify(listArr));
 const winnerList = () => localStorage.setItem('winner', JSON.stringify(winnerArr));
@@ -32,10 +32,18 @@ const handleWinner = id => {
 const handleRandom = () => {
   const max = listArr.length;
   const numRandom = Math.trunc(Math.random() * max);
+
   if (max === 0) return;
   handleWinner(listArr[numRandom].id);
   const { id, ...rest } = listArr[numRandom];
+  winnerArr.map(e => {
+    if (e.name === listArr[numRandom].name) {
+      e.count = count++;
+    }
+  })
+
   winnerArr.push(rest);
+
   listArr.splice(numRandom, 1);
   saveList();
   winnerList();
@@ -43,6 +51,7 @@ const handleRandom = () => {
 
 const deleteName = event => {
   const targetLi = event.target.parentNode;
+
   targetLi.classList.add('hide');
   setTimeout(() => targetLi.remove(), 300);
   const new_listArr = listArr.filter(e => e.id !== parseInt(targetLi.dataset.id));
@@ -62,18 +71,12 @@ const paintName = name => {
   li.append(btnDel);
   list.append(li);
 
-  winnerArr.map(e => {
-    if (e.name === name) {
-      count++
-    }
-  })
-
   const listObj = {
     id: listId,
     date: `${year.value}-${month.value}`,
-    name,
-    count
+    name
   };
+
   listArr.push(listObj);
   saveList();
 }
@@ -81,6 +84,7 @@ const paintName = name => {
 const handleSubmit = event => {
   event.preventDefault();
   const name = inputName.value;
+
   if (name === '') return;
   inputName.value = '';
   paintName(name);
