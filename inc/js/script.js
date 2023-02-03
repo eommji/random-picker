@@ -1,12 +1,17 @@
 /*
   [동명이인일 경우 고려해야 함]
   - 각 사람마다 고유한 ID(사번??)
-  - 이름 Input 대신 직원 명단이 있고 선택 시 자동 입력되게??
+  - input 대신 직원 명단이 있고 선택 시 자동 입력되게??
 
   [당첨 우선순위]
   1. 목록에 없는 사람
   2. 당첨 횟수 적은 사람
   3. 당첨된 지 오래된 사람
+
+  1. 추첨 버튼 누르고 input에 입력하고 엔터 치면, 목록 리셋
+  2. 추첨 버튼 누르면, input disabled 상태로 바뀜
+
+  [퇴사자 삭제]
 */
 
 const form = document.querySelector('.form');
@@ -19,10 +24,10 @@ const month = document.querySelector('.select-month');
 
 let listArr = [];
 let winnerArr = [];
-let count = 0;
+let count = 1;
 
 const saveList = () => sessionStorage.setItem('list', JSON.stringify(listArr));
-const winnerList = () => localStorage.setItem('winner', JSON.stringify(winnerArr));
+const saveWinner = () => localStorage.setItem('winner', JSON.stringify(winnerArr));
 
 const handleWinner = id => {
   const winner = list.querySelector(`li[data-id="${id}"]`);
@@ -32,21 +37,22 @@ const handleWinner = id => {
 const handleRandom = () => {
   const max = listArr.length;
   const numRandom = Math.trunc(Math.random() * max);
+  const winner = listArr[numRandom];
 
   if (max === 0) return;
-  handleWinner(listArr[numRandom].id);
-  const { id, ...rest } = listArr[numRandom];
-  winnerArr.map(e => {
-    if (e.name === listArr[numRandom].name) {
-      e.count = count++;
-    }
-  })
-
+  handleWinner(winner.id);
+  const { id, ...rest } = winner;
   winnerArr.push(rest);
-
+  winnerArr.map((e, i) => {
+    if (e.name === winner.name) {
+      e.count = count++;
+    } else {
+      
+    }
+  });
   listArr.splice(numRandom, 1);
   saveList();
-  winnerList();
+  saveWinner();
 }
 
 const deleteName = event => {
