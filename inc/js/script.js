@@ -4,14 +4,26 @@
   - input 대신 직원 명단이 있고 선택 시 자동 입력되게??
 
   [당첨 우선순위]
-  1. 목록에 없는 사람
-  2. 당첨 횟수 적은 사람
+  1. 당첨 횟수 적은 사람
   3. 당첨된 지 오래된 사람
 
   1. 추첨 버튼 누르고 input에 입력하고 엔터 치면, 목록 리셋
   2. 추첨 버튼 누르면, input disabled 상태로 바뀜
 
   [퇴사자 삭제]
+
+  처음 submit 할 때 이름, 날짜 데이터 쌓기
+
+  ************************************************
+  1. 목록에 있는 사람들의 데이터를 가져온다.
+  [
+    {
+      name, count, recentDate
+    }...
+  ]
+  2. count 오름차순 + recentDate 오름차순 정렬(sort 함수 사용)
+  3. 3명 뽑는다.(가중치가 같을 수 있으나 안 뽑힌 사람은 다음에 뽑힐 것이기 때문에 무시)
+  4. 뽑힌 사람은 DB에 넣는다.
 */
 
 const form = document.querySelector('.form');
@@ -26,7 +38,7 @@ let listArr = [];
 let winnerArr = [];
 let count = 1;
 
-const saveList = () => sessionStorage.setItem('list', JSON.stringify(listArr));
+const saveList = () => localStorage.setItem('list', JSON.stringify(listArr));
 const saveWinner = () => localStorage.setItem('winner', JSON.stringify(winnerArr));
 
 const handleWinner = id => {
@@ -43,13 +55,6 @@ const handleRandom = () => {
   handleWinner(winner.id);
   const { id, ...rest } = winner;
   winnerArr.push(rest);
-  winnerArr.map((e, i) => {
-    if (e.name === winner.name) {
-      e.count = count++;
-    } else {
-      
-    }
-  });
   listArr.splice(numRandom, 1);
   saveList();
   saveWinner();
@@ -90,14 +95,9 @@ const paintName = name => {
 const handleSubmit = event => {
   event.preventDefault();
   const name = inputName.value;
-
   if (name === '') return;
   inputName.value = '';
   paintName(name);
-}
-
-const handleSave = () => {
-
 }
 
 if (localStorage.getItem('winner')) {
