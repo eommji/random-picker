@@ -34,12 +34,38 @@ const btnSave = document.querySelector('.btn-save');
 const year = document.querySelector('.select-year');
 const month = document.querySelector('.select-month');
 
+let tempArr = [];
 let listArr = [];
 let winnerArr = [];
 let count = 1;
 
+let count2 = 0;
+
+const saveTemp = () => localStorage.setItem('temp', JSON.stringify(tempArr));
 const saveList = () => localStorage.setItem('list', JSON.stringify(listArr));
 const saveWinner = () => localStorage.setItem('winner', JSON.stringify(winnerArr));
+
+
+// 객체 내의 값 인스턴스 개수 세기
+// var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+const names = [
+  { date: "2023-01", nick: "다" },
+  { date: "2023-01", nick: "가" },
+  { date: "2023-01", nick: "나" }
+]
+
+// var countedNames = names.reduce(function (allNames, nick) {
+//   if (nick in allNames) {
+//     allNames[nick]++;
+//   }
+//   else {
+//     allNames[nick] = 1;
+//   }
+//   return allNames;
+// }, {});
+// countedNames is:
+// { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
+console.log(countedNames);
 
 const handleWinner = id => {
   const winner = list.querySelector(`li[data-id="${id}"]`);
@@ -47,16 +73,16 @@ const handleWinner = id => {
 }
 
 const handleRandom = () => {
-  const max = listArr.length;
+  const max = tempArr.length;
   const numRandom = Math.trunc(Math.random() * max);
-  const winner = listArr[numRandom];
+  const winner = tempArr[numRandom];
 
   if (max === 0) return;
   handleWinner(winner.id);
   const { id, ...rest } = winner;
   winnerArr.push(rest);
-  listArr.splice(numRandom, 1);
-  saveList();
+  tempArr.splice(numRandom, 1);
+  saveTemp();
   saveWinner();
 }
 
@@ -65,30 +91,29 @@ const deleteName = event => {
 
   targetLi.classList.add('hide');
   setTimeout(() => targetLi.remove(), 300);
-  const new_listArr = listArr.filter(e => e.id !== parseInt(targetLi.dataset.id));
-  listArr = new_listArr;
-  saveList();
+  const new_tempArr = tempArr.filter(e => e.id !== parseInt(targetLi.dataset.id));
+  tempArr = new_tempArr;
+  saveTemp();
 }
 
 const paintName = name => {
   const li = document.createElement('li');
   const btnDel = document.createElement('button');
-  const listId = listArr.length + 1;
-
+  const listId = tempArr.length + 1;
   li.dataset.id = listId;
   li.append(name);
   btnDel.append('X');
   btnDel.addEventListener('click', deleteName);
   li.append(btnDel);
   list.append(li);
-
   const listObj = {
     id: listId,
     date: `${year.value}-${month.value}`,
     name
   };
-
+  tempArr.push(listObj);
   listArr.push(listObj);
+  saveTemp();
   saveList();
 }
 
@@ -103,6 +128,21 @@ const handleSubmit = event => {
 if (localStorage.getItem('winner')) {
   winnerArr.push(...JSON.parse(localStorage.getItem('winner')));
 }
+
+
+// 같은 name인 객체끼리 분류
+const handleSave = (objectArray, property) => {
+  return objectArray.reduce((acc, obj) => {
+    var key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+}
+var groupedPeople = handleSave(winnerArr, 'name');
+// console.log(groupedPeople);
 
 form.addEventListener('submit', handleSubmit);
 btnRandom.addEventListener('click', handleRandom);
