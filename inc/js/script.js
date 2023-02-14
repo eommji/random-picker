@@ -1,10 +1,10 @@
 /*
-  [동명이인일 경우 고려해야 함]
+  [동명이인일 경우 고려해야 함] 아니? 이렇게까지 하진 말자 ㅎ
   - 각 사람마다 고유한 ID(사번??)
   - input 대신 직원 명단이 있고 선택 시 자동 입력되게??
 
   [당첨 우선순위]
-  1. 목록에 없는 사람
+  1. 당첨된 적 없는 사람
   2. 당첨 횟수 적은 사람
   3. 당첨된 지 오래된 사람
 
@@ -43,13 +43,16 @@ const handleRandom = () => {
   handleWinner(winner.id);
   const { id, ...rest } = winner;
   winnerArr.push(rest);
-  winnerArr.map((e, i) => {
-    if (e.name === winner.name) {
-      e.count = count++;
-    } else {
+  // winnerArr.map((e, i) => {
+  //   if (e.name === winner.name) {
       
-    }
-  });
+  //   } else {
+
+  //   }
+  // });
+  winnerArr.map(e => {
+    console.log(e);
+  })
   listArr.splice(numRandom, 1);
   saveList();
   saveWinner();
